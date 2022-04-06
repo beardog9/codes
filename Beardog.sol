@@ -1349,20 +1349,20 @@ contract Beardog is ERC20, Ownable {
     constructor() ERC20("Beardog", "BEARDOG", 18) {
         
         // sell fees
-        sellRewardsFee = 4;
-        sellLiquidityFee = 2;
-        sellOperationsFee = 6;
-        sellBuybackFee = 2;
-        sellCharityFee = 1;
-        sellTotalFees = sellRewardsFee + sellLiquidityFee + sellOperationsFee + sellBuybackFee + sellCharityFee; // 15%
+        sellRewardsFee = 2;
+        sellLiquidityFee = 0;
+        sellOperationsFee = 3;
+        sellBuybackFee = 0;
+        sellCharityFee = 0;
+        sellTotalFees = sellRewardsFee + sellLiquidityFee + sellOperationsFee + sellBuybackFee + sellCharityFee; // 5%
         
         // buy fees
-        buyRewardsFee = 4;
-        buyLiquidityFee = 1;
+        buyRewardsFee = 2;
+        buyLiquidityFee = 0;
         buyOperationsFee = 3;
-        buyBuybackFee = 1;
-        buyCharityFee = 1;
-        buyTotalFees = buyRewardsFee + buyLiquidityFee + buyOperationsFee + buyBuybackFee + buyCharityFee; // 10%
+        buyBuybackFee = 0;
+        buyCharityFee = 0;
+        buyTotalFees = buyRewardsFee + buyLiquidityFee + buyOperationsFee + buyBuybackFee + buyCharityFee; // 5%
             
     	dividendTracker = new DividendTracker();
 
@@ -1429,8 +1429,8 @@ contract Beardog is ERC20, Ownable {
     // change the minimum amount of tokens to sell from fees
     function updateSwapTokensAtAmount(uint256 newAmount) external onlyOwner returns (bool){
   	    require(newAmount < totalSupply(), "Swap amount cannot be higher than total supply.");
-  	    require(newAmount >= totalSupply() * 5 / 100000, "Swap amount cannot be lower than 0.005% total supply.");
-  	    require(newAmount <= totalSupply() * 5 / 1000, "Swap amount cannot be higher than 0.5% total supply.");
+  	    require(newAmount >= totalSupply() * 1 / 1000000, "Swap amount cannot be lower than 0.0001% total supply.");
+  	    require(newAmount <= totalSupply() * 1 / 100, "Swap amount cannot be higher than 1% total supply.");
   	    swapTokensAtAmount = newAmount;
   	    return true;
   	}
@@ -2043,8 +2043,8 @@ contract DividendTracker is DividendPayingToken {
     event Claim(address indexed account, uint256 amount, bool indexed automatic);
 
     constructor() DividendPayingToken() {
-    	claimWait = 1200;
-        minimumTokenBalanceForDividends = 100 * 1e18; //must hold 100+ tokens to get divs
+    	claimWait = 3600;
+        minimumTokenBalanceForDividends = 100000 * 1e18; //must hold 100000+ tokens to get divs
     }
 
     function withdrawDividend() pure external override {
@@ -2073,7 +2073,7 @@ contract DividendTracker is DividendPayingToken {
     }
 
     function updateClaimWait(uint256 newClaimWait) external onlyOwner {
-        require(newClaimWait >= 1200 && newClaimWait <= 86400, "claimWait must be updated to between 1 and 24 hours");
+        require(newClaimWait >= 3600 && newClaimWait <= 86400, "claimWait must be updated to between 1 and 24 hours");
         require(newClaimWait != claimWait, "Cannot update claimWait to same value");
         emit ClaimWaitUpdated(newClaimWait, claimWait);
         claimWait = newClaimWait;
